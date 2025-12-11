@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Отчет для {{ student.name }}</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        /* Стили специально для печати */
+        body { font-family: sans-serif; }
+        .report-header { text-align: center; margin-bottom: 30px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        @media print {
+            .no-print { display: none; }
+            .chart-container { display: none; } /* Не печатаем диаграмму */
+        }
+        .chart-container {
+            margin-top: 40px;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="report-header">
+        <h1>Отчет об успеваемости</h1>
+        <h2>Ученик: {{ student.name }}</h2>
+    </div>
+
+    <h3>Оценки</h3>
+    {% if student.grades %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Предмет</th>
+                    <th>Оценка</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for grade in student.grades %}
+                <tr>
+                    <td>
+                        <i class="{{ grade.subject.icon }} subject-icon"></i>
+                        {{ grade.subject.name }}
+                    </td>
+                    <td>{{ grade.value }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <p><b>Итоговый средний балл: {{ "%.2f"|format(student.get_average_grade()) }}</b></p>
+
+        <div class="chart-container">
+            <h3>Диаграмма успеваемости</h3>
+            <canvas id="gradesChart"></canvas>
+        </div>
+
+    {% else %}
+        <p>Нет данных для формирования отчета.</p>
+    {% endif %}
+    <br>
+    <button onclick="window.print()" class="button no-print">Печать</button>
+
+    <script>
+    {% if student.grades %}
+        const ctx = document.getElementById('gradesChart').getContext('2d');
+        const gradesData = {{ student.grades | map(attribute='to_dict') | list | tojson }};
+
+        // Группируем оценки по предметам и считаем средний балл
+        const allSubjects = {{ subjects | map(attribute='to_dict') | list | tojson }};
+        const subjectGrades = {};
+        gradesData.forEach(grade => {
+            const subjectInfo = allSubjects.find(s => s.name === grade.subject);
+            if (!subjectGrades[grade.subject] && subjectInfo) {
+                subjectGrades[grade.subject] = { sum: 0, count: 0, icon: subjectInfo.icon };
+            }
+            if (subjectGrades[grade.subject]) {
+                subjectGrades[grade.subject].sum += grade.value;
+                subjectGrades[grade.subject].count += 1;
+            }
+        });
+
+        const labels = Object.keys(subjectGrades);
+        const data = labels.map(subject => {
+            const info = subjectGrades[subject];
+            return info.sum / info.count; // Средний балл
+        });
+
+        new Chart(ctx, {
+            type: 'bar', // Тип диаграммы: столбчатая
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Оценки',
+                    data: data,
+                    backgroundColor: labels.map(label => {
+                        const info = subjectGrades[label];
+                        if (info.icon.includes('fa-calculator')) return 'rgba(142, 68, 173, 0.6)'; // Purple
+                        if (info.icon.includes('fa-book-open')) return 'rgba(238, 9, 121, 0.6)'; // Pink
+                        if (info.icon.includes('fa-atom')) return 'rgba(37, 117, 252, 0.6)'; // Blue
+                        if (info.icon.includes('fa-landmark')) return 'rgba(255, 106, 0, 0.6)'; // Orange
+                        return 'rgba(127, 140, 141, 0.6)';
+                    }),
+                    borderColor: 'rgba(44, 62, 80, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: { beginAtZero: true, max: 5 } // Шкала оценок от 0 до 5
+                },
+                plugins: { legend: { display: false } } // Скрываем легенду
+            }
+        });
+    {% endif %}
+    </script>
+</body>
+</html>

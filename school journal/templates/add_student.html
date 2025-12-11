@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Добавить ученика{% endblock %}
+
+{% block content %}
+    <h2>Добавить нового ученика</h2>
+
+    <form action="{{ url_for('add_student') }}" method="post" class="grade-form">
+        <div class="form-group">
+            <label for="name">Имя и фамилия ученика:</label>
+            <input type="text" name="name" id="name" required minlength="2">
+        </div>
+        <button type="submit" class="button">Сохранить</button>
+    </form>
+{% endblock %}

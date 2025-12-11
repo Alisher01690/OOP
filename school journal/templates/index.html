@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Список учеников{% endblock %}
+
+{% block content %}
+    <div class="student-header">
+        <h2>Список учеников</h2>
+        <a href="{{ url_for('add_student') }}" class="button">Добавить ученика</a>
+    </div>
+    <ul class="student-list">
+        {% for student in students %}
+            <li>
+                <div class="student-item">
+                    <a href="{{ url_for('student_details', student_id=student.id) }}">
+                        {{ student.name }}
+                    </a>
+                    <button class="button-delete" onclick="deleteStudent({{ student.id }})">Удалить</button>
+                </div>
+            </li>
+        {% else %}
+            <li>Нет учеников для отображения.</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function deleteStudent(studentId) {
+    if (confirm('Вы уверены, что хотите удалить этого ученика?')) {
+        fetch(`/student/${studentId}/delete`, {
+            method: 'DELETE',
+        }).then(response => {
+            if (response.ok) {
+                window.location.reload(); // Перезагружаем страницу для обновления списка
+            }
+        });
+    }
+}
+</script>
+{% endblock %}

@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}{{ student.name }}{% endblock %}
+
+{% block content %}
+    <div class="student-header">
+        <h2>{{ student.name }}</h2>
+        <a href="{{ url_for('generate_report', student_id=student.id) }}" class="button report-button">
+            Сгенерировать отчет
+        </a>
+    </div>
+
+    <h3>Оценки</h3>
+    {% if student.grades %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Предмет</th>
+                    <th>Оценки</th>
+                    <th>Средний балл</th>
+                </tr>
+            </thead>
+            <tbody>
+                {# Группируем оценки по объекту 'subject' #}
+                {% for group in student.grades | groupby('subject') %}
+                <tr>
+                    <td>
+                        <i class="{{ group.grouper.icon }} subject-icon"></i>
+                        {{ group.grouper.name }}
+                    </td>
+                    <td>
+                        {# Выводим все оценки для этой группы через запятую #}
+                        {{ group.list | map(attribute='value') | join(', ') }}
+                    </td>
+                    <td>
+                        {# Считаем средний балл для группы #}
+                        {% set total = group.list | sum(attribute='value') %}
+                        {{ "%.2f"|format(total / group.list|length) }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <p><b>Средний балл:</b> {{ "%.2f"|format(student.get_average_grade()) }}</p>
+    {% else %}
+        <p>У этого ученика пока нет оценок.</p>
+    {% endif %}
+
+    <hr>
+
+    <h3>Добавить новую оценку</h3>
+    <form action="{{ url_for('add_grade', student_id=student.id) }}" method="post" class="grade-form">
+        <div class="form-group">
+            <label for="subject">Предмет:</label>
+            <select name="subject" id="subject" required>
+                {% for s in subjects %}
+                <option value="{{ s.name }}">
+                    {{ s.name }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="grade">Оценка:</label>
+            <input type="number" name="grade" id="grade" min="1" max="5" required>
+        </div>
+        <button type="submit" class="button">Добавить</button>
+    </form>
+{% endblock %}

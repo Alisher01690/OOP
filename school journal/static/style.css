@@ -1,0 +1,207 @@
+/* static/style.css */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap');
+
+:root {
+    --color-purple: #8e44ad;
+    --color-pink: #ee0979;
+    --color-orange: #ff6a00;
+    --color-blue: #2575fc;
+    --background-color: #f4f6f9;
+    --text-color: #2c3e50;
+    --card-bg-color: #ffffff;
+    --shadow-color: rgba(44, 62, 80, 0.1);
+}
+
+body {
+    font-family: 'Nunito', sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+header {
+    background: linear-gradient(90deg, var(--color-pink), var(--color-orange), var(--color-blue));
+    color: #fff;
+    padding: 1.5rem 0;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+header a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 700;
+}
+
+main {
+    max-width: 800px;
+    margin: 30px auto;
+    padding: 20px;
+}
+
+footer {
+    text-align: center;
+    margin-top: 40px;
+    padding: 20px;
+    color: #777;
+}
+
+.student-list {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+}
+
+.student-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background: var(--card-bg-color);
+    border-left: 5px solid var(--color-purple);
+    border-radius: 12px;
+    box-shadow: 0 4px 15px var(--shadow-color);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.student-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px var(--shadow-color);
+}
+
+/* Делаем каждого ученика разного цвета */
+.student-item:nth-child(4n+1) {
+    border-left-color: var(--color-purple);
+}
+.student-item:nth-child(4n+2) {
+    border-left-color: var(--color-pink);
+}
+.student-item:nth-child(4n+3) {
+    border-left-color: var(--color-orange);
+}
+.student-item:nth-child(4n+4) {
+    border-left-color: var(--color-blue);
+}
+
+.student-item a {
+    display: block;
+    text-decoration: none;
+    color: var(--text-color);
+    font-size: 1.1rem;
+    flex-grow: 1;
+}
+
+.button-delete {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: var(--card-bg-color);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px var(--shadow-color);
+}
+
+th, td {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+    text-align: left;
+}
+
+th {
+    background-color: var(--color-purple);
+    color: white;
+    font-weight: 700;
+}
+
+.button {
+    display: inline-block;
+    background: var(--color-purple);
+    color: #fff;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 700;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.button:hover {
+    background: #7b2fad;
+    transform: translateY(-2px);
+}
+
+.report-button {
+    background: var(--color-orange);
+}
+
+.report-button:hover {
+    background: #e65c00;
+}
+
+.student-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background: var(--card-bg-color);
+    border-radius: 12px;
+    box-shadow: 0 4px 15px var(--shadow-color);
+    margin-bottom: 30px;
+}
+
+.grade-form {
+    margin-top: 30px;
+    padding: 25px;
+    background: var(--card-bg-color);
+    border-radius: 12px;
+    box-shadow: 0 4px 15px var(--shadow-color);
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 700;
+}
+
+.form-group input, .form-group select {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input:focus, .form-group select:focus {
+    outline: none;
+    border-color: var(--color-purple);
+}
+
+.chart-container {
+    margin-top: 30px;
+    padding: 20px;
+}
+
+.subject-icon {
+    margin-right: 8px;
+    color: var(--color-purple);
+}
